@@ -41,10 +41,11 @@ function App() {
                 </div>
                 
                 <div className="w-full">
-                  <SignIn routing="hash" />
                 </div>
               </div>
             </div>
+                            <SignIn routing="hash" />
+
           </SignedOut>
 
           <SignedIn>
