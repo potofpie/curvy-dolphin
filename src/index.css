@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply handwritten font globally */
+* {
+  font-family: 'Kalam', cursive;
+}
+
+/* Custom doodle styles */
+@layer utilities {
+  .border-3 {
+    border-width: 3px;
+  }
+  
+  .transform-doodle {
+    transform: rotate(-1deg) scale(1.02);
+  }
+  
+  .transform-doodle:hover {
+    transform: rotate(1deg) scale(1.05);
+  }
+}
+
+/* Add some playful animations */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
