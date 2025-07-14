@@ -39,11 +39,7 @@ function App() {
                     <div className="hidden sm:block absolute -bottom-1 left-8 w-12 h-1 bg-blue-300 transform rotate-1"></div>
                   </p>
                 </div>
-                
-                <div className="w-full">
-                </div>
-              </div>
-            </div>
+
                             <SignIn routing="hash" />
 
           </SignedOut>
