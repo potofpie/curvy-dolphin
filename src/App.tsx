@@ -22,10 +22,19 @@ function App() {
           </header>
 
           <SignedOut>
-                 <SignIn routing="hash" />
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                    Welcome Back
+                  </h2>
+                  <p className="text-gray-600 text-base relative">
+                    Sign in to convert your handwritten notes to Markdown
+                    <div className="hidden sm:block absolute -bottom-1 left-8 w-12 h-1 bg-blue-300 transform rotate-1"></div>
+                  </p>
+                </div>
+                      <SignedIn>
           </SignedOut>
 
-          <SignedIn>
+
             <NotesConverter />
           </SignedIn>
         </div>
