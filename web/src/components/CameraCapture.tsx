@@ -2,8 +2,10 @@ import React, { useState, useRef } from 'react';
 import { Camera, Upload, FileImage, AlertCircle, Smartphone } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import { useAuth } from '@clerk/clerk-react';
+import { API_URL, API_AGENT_ID } from '../contstants';
 
-const url = 'http://127.0.0.1:3500/agent_f2ddda262b479a53f20fa75b1311f52f';
+
+const url = `${API_URL}/${API_AGENT_ID}`;
 
 
 interface CameraCaptureProps {

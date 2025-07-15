@@ -63,7 +63,7 @@ function App() {
           </SignedOut>
 
           <SignedIn>
-            <BrowserRouter>
+            <BrowserRouter basename={"/curvy-dolphin"}>
               <Routes>
                 <Route path="/" element={<NotesConverter />} />
                 <Route path="/phone" element={<PhoneLinkScan />} />
