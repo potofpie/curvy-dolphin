@@ -1,7 +1,9 @@
 import { ClerkProvider, SignIn,  SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import NotesConverter from './pages/NotesConverter';
 import doodleLogo from '../doodle_agentuity.png';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
+
 import PhoneLinkScan from './pages/PhoneLinkScan';
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_a2V5LXRyb2xsLTQ1LmNsZXJrLmFjY291bnRzLmRldiQ';
@@ -63,12 +65,12 @@ function App() {
           </SignedOut>
 
           <SignedIn>
-            <BrowserRouter basename={"/curvy-dolphin"}>
+            <Router>
               <Routes>
                 <Route path="/" element={<NotesConverter />} />
                 <Route path="/phone" element={<PhoneLinkScan />} />
               </Routes>
-            </BrowserRouter>
+            </Router>
           </SignedIn>
         </div>
       </div>
