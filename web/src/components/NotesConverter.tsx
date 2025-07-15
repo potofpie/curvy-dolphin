@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react';
-import { Camera, Copy, FileText, Upload, CheckCircle, AlertCircle, RotateCcw } from 'lucide-react';
+import React, { useState } from 'react';
 import CameraCapture from './CameraCapture';
 import ConversionResult from './ConversionResult';
 
@@ -55,7 +54,7 @@ const NotesConverter: React.FC = () => {
       });
       
       setCurrentStep('result');
-    } catch (err) {
+    } catch  {
       setError('Failed to convert image. Please try again.');
       setCurrentStep('capture');
     } finally {

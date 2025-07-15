@@ -1,31 +1,37 @@
-import React from 'react';
-import { ClerkProvider, SignIn, SignUp, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
+import { ClerkProvider, SignIn,  SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import NotesConverter from './components/NotesConverter';
+import doodleLogo from '../doodle_agentuity.png';
 
-// Add your Clerk publishable key here
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_a2V5LXRyb2xsLTQ1LmNsZXJrLmFjY291bnRzLmRldiQ';
 
 function App() {
   return (
     <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50 text-gray-900">
+
         <div className="container mx-auto px-4 py-8">
           <header className="flex items-center justify-between mb-8">
+            <div className="flex flex-row items-center pt-8 pb-4">
+          <div className="flex flex-col items-center pt-8 pb-4">
+          <img src={doodleLogo} alt="Curvy Dolphin Logo" className="h-24 mb-6" />
+        </div>
             <h1 className="text-3xl font-bold text-gray-800 relative">
               Notes to Markdown
               <div className="absolute -top-2 -right-8 w-6 h-6 border-2 border-gray-400 rounded-full transform rotate-12"></div>
               <div className="absolute -bottom-1 left-4 w-16 h-1 bg-yellow-300 transform -rotate-1"></div>
             </h1>
+            </div>
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
           </header>
 
           <SignedOut>
-                <div className="text-center mb-6">
-              {/* Header doodles - visible on all screens but positioned safely */}
-              <div className="absolute -top-6 left-4 w-4 h-4 bg-yellow-300 rounded-full border-2 border-gray-800 hidden sm:block"></div>
-              <div className="absolute -top-3 right-8 w-3 h-3 bg-pink-300 rounded-full border-2 border-gray-800"></div>
+            <div className="flex flex-col items-center justify-center min-h-[60vh] relative">
+              <div className="text-center mb-6">
+                {/* Header doodles - visible on all screens but positioned safely */}
+                <div className="absolute -top-6 left-4 w-4 h-4 bg-yellow-300 rounded-full border-2 border-gray-800 hidden sm:block"></div>
+                <div className="absolute -top-3 right-8 w-3 h-3 bg-pink-300 rounded-full border-2 border-gray-800"></div>
                 {/* Card corner doodles */}
                 <div className="absolute -top-2 -left-2 w-5 h-5 bg-blue-300 rounded-full border-2 border-gray-800"></div>
                 <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-green-300 border-2 border-gray-800 transform rotate-45"></div>
@@ -51,7 +57,7 @@ function App() {
               <div className="absolute -bottom-3 right-6 w-4 h-4 border-2 border-gray-800 transform rotate-45 hidden sm:block">
                 <div className="w-2 h-2 bg-pink-300 rounded-full absolute top-0.5 left-0.5"></div>
               </div>
-                
+            </div>
           </SignedOut>
 
           <SignedIn>

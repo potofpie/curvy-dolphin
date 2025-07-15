@@ -1,5 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Upload, FileImage, AlertCircle } from 'lucide-react';
+import { Camera, Upload, FileImage, AlertCircle, Smartphone } from 'lucide-react';
+import QRCode from 'react-qr-code';
+import { useAuth } from '@clerk/clerk-react';
+
+const url = 'http://127.0.0.1:3500/agent_f2ddda262b479a53f20fa75b1311f52f';
+
 
 interface CameraCaptureProps {
   onImageCapture: (imageData: string) => void;
@@ -12,6 +17,26 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [linkPassword, setLinkPassword] = useState<string | null>(null);
+  const { getToken } = useAuth();
+
+  const startPhoneLink = async () => {
+    try {
+      const token = await getToken();
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'startPhoneLink',
+          token
+        })
+      });
+      const data = await response.json();
+      setLinkPassword(data.password);
+    } catch (err) {
+      console.error('Error accessing camera:', err);
+      setIsCapturing(false);
+    }
+  }
 
   const startCamera = async () => {
     try {
@@ -92,7 +117,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
         </div>
       )}
 
-      {!selectedImage && !isCapturing && (
+      {!selectedImage && !isCapturing && !linkPassword && (
         <div className="text-center relative">
           <div className="mb-6">
             <div className="relative mx-auto w-24 h-24 mb-4">
@@ -117,6 +142,15 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
               <Camera className="h-5 w-5 mr-2" />
               Open Camera
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full border border-gray-800"></div>
+            </button>
+
+            <button
+              onClick={startPhoneLink}
+              className="flex items-center justify-center px-6 py-3 bg-purple-300 text-white border-3 border-gray-800 rounded-2xl hover:bg-purple-500 transition-all transform hover:-rotate-1 hover:scale-105 shadow-lg relative"
+            >
+              <Smartphone className="h-5 w-5 mr-2" />
+              Open on Phone
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-300 rounded-full border border-gray-800"></div>
             </button>
 
             <button
@@ -202,7 +236,22 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
         </div>
       )}
 
-      <canvas ref={canvasRef} className="hidden" />
+{linkPassword && (
+        <div className="text-center relative flex flex-col items-center justify-center gap-6">
+          <h3 className="text-lg text-gray-600 mb-2 relative">Scan the QR code to open the app on your phone</h3>
+           
+            <QRCode value={`http://localhost:5173/phone?password=${linkPassword}`} size={200} />
+            <code className="text-sm text-gray-600">{linkPassword}</code>
+            <button
+              onClick={() => setLinkPassword(null)}
+              className="px-6 py-3 bg-red-400 text-white border-3 border-gray-800 rounded-2xl hover:bg-red-500 transition-all transform hover:rotate-1 hover:scale-105 shadow-lg relative"
+            >
+              Cancel
+              <div className="absolute -top-1 -left-1 w-3 h-3 bg-pink-300 rounded-full border border-gray-800"></div>
+            </button>
+        </div>
+      )}
+
     </div>
   );
 };
