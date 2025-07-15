@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import CameraCapture from '../components/CameraCapture';
 import ConversionResult from '../components/ConversionResult';
 import HeroText from '../components/HeroText';
+import { useAuth } from '@clerk/clerk-react';
+import { API_URL, API_AGENT_ID, NOTE_READER_AGENT_ID  } from '../contstants';
 
 type Step = 'capture' | 'processing' | 'result';
 
@@ -16,6 +18,8 @@ const NotesConverter: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { userId, getToken } = useAuth();
+
   console.log('isProcessing', isProcessing);
 
   const handleImageCapture = async (imageData: string) => {
@@ -24,41 +28,27 @@ const NotesConverter: React.FC = () => {
     setCurrentStep('processing');
 
     try {
-      // Simulate API call for now - replace with actual OCR service
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      // Mock conversion result
-      const mockMarkdown = `# Handwritten Notes
-
-## Meeting Notes - ${new Date().toLocaleDateString()}
-
-### Key Points:
-- Review project timeline and milestones
-- Discuss budget allocation for Q2
-- Identify potential risks and mitigation strategies
-
-### Action Items:
-- [ ] Follow up with stakeholders by Friday
-- [ ] Prepare presentation for next week
-- [ ] Update project documentation
-
-### Next Steps:
-1. Schedule follow-up meeting
-2. Distribute meeting minutes
-3. Begin implementation of discussed changes
-
----
-
-*Note: This is a sample conversion. Replace with actual OCR service integration.*`;
-
-      setConversionData({
-        originalImage: imageData,
-        markdown: mockMarkdown
+      const token = await getToken();
+      if (!userId || !token) {
+        setError('Not authenticated. Please sign in.');
+        setCurrentStep('capture');
+        setIsProcessing(false);
+        return;
+      }
+      const response = await fetch(`${API_URL}/${NOTE_READER_AGENT_ID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, token, image: imageData }),
       });
-      
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+      const markdown = await response.text();
+      setConversionData({ originalImage: imageData, markdown });
       setCurrentStep('result');
-    } catch  {
-      setError('Failed to convert image. Please try again.');
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      setError('Failed to convert image. ' + errorMsg);
       setCurrentStep('capture');
     } finally {
       setIsProcessing(false);

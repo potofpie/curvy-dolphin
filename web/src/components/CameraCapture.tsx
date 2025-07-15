@@ -20,6 +20,33 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
   const [linkPassword, setLinkPassword] = useState<string | null>(null);
   const { getToken } = useAuth();
 
+
+  const checkForImage = async (password: string) => {
+    try {
+      const token = await getToken();
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'checkForImage',
+          token,
+          password
+        })
+      });
+      if (!response.ok) {
+        console.error('Response not ok', response.status, await response.text());
+        return;
+      }
+      const data = await response.json();
+      console.log('checkForImage response:', data);
+      const imageData = data.image;
+      setSelectedImage(imageData);
+
+      setLinkPassword(null);
+    } catch (err) {
+      console.error('Error in checkForImage:', err);
+    }
+  }
+
   const startPhoneLink = async () => {
     try {
       const token = await getToken();
@@ -236,7 +263,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
         </div>
       )}
 
-{linkPassword && (
+    {linkPassword && (
         <div className="text-center relative flex flex-col items-center justify-center gap-6">
           <h3 className="text-lg text-gray-600 mb-2 relative">Scan the QR code to open the app on your phone</h3>
            
@@ -248,6 +275,12 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
             >
               Cancel
               <div className="absolute -top-1 -left-1 w-3 h-3 bg-pink-300 rounded-full border border-gray-800"></div>
+            </button>
+            <button
+              onClick={() => checkForImage(linkPassword)}
+              className="px-6 py-3 bg-green-400 text-white border-3 border-gray-800 rounded-2xl hover:bg-green-500 transition-all transform hover:-rotate-1 hover:scale-105 shadow-lg relative"
+            >
+              Check for Image
             </button>
         </div>
       )}

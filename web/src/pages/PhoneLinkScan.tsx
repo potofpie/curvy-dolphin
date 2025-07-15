@@ -2,6 +2,7 @@ import { Camera, FileImage,  } from "lucide-react";
 // import HeroText from "../components/HeroText";
 import { useSearchParams } from "react-router-dom";
 import { useRef, useState } from "react";
+import { API_AGENT_ID, API_URL } from "../contstants";
 
 const PhoneLinkScan = () => {
 // get query params
@@ -12,9 +13,20 @@ const videoRef = useRef<HTMLVideoElement>(null);
 const canvasRef = useRef<HTMLCanvasElement>(null);
 const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-console.log('isCapturing', isCapturing);
-console.log('password', password);
-console.log('selectedImage', selectedImage);
+const sendToAI = () => {
+    fetch(`${API_URL}/${API_AGENT_ID}`, {
+        method: 'POST',
+        body: JSON.stringify({
+            action: 'sendImageFromPhone',
+            image: selectedImage,
+            password: password
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    
+}
 
 const resetCapture = () => {
     setSelectedImage(null);
@@ -30,15 +42,13 @@ const captureImage = () => {
       const canvas = canvasRef.current;
       const video = videoRef.current;
       const context = canvas.getContext('2d');
-      
       if (context) {
+        console.log('captureImage 3');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0);
-        
         const imageData = canvas.toDataURL('image/jpeg');
         setSelectedImage(imageData);
-        
         // Stop camera
         const stream = video.srcObject as MediaStream;
         stream?.getTracks().forEach(track => track.stop());
@@ -65,9 +75,8 @@ const startCamera = async () => {
 
   return (
     <div>
-      {/* <HeroText /> */}
-      {/* {password} */}
-      {!isCapturing && (<div className="bg-white border-4 border-gray-800 rounded-3xl p-8 shadow-lg max-w-2xl mx-auto relative transform rotate-1">
+      <canvas ref={canvasRef} style={{ display: "none" }} />
+      { !selectedImage && !isCapturing && (<div className="bg-white border-4 border-gray-800 rounded-3xl p-8 shadow-lg max-w-2xl mx-auto relative transform rotate-1">
       <div className="absolute -top-3 -left-2 w-5 h-5 bg-yellow-300 rounded-full border-2 border-gray-800"></div>
       <div className="absolute -top-4 right-8 w-3 h-3 bg-pink-300 rounded-full border-2 border-gray-800"></div>
       <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-blue-300 border-2 border-gray-800 transform rotate-45"></div>
@@ -97,14 +106,10 @@ const startCamera = async () => {
               Open Camera
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full border border-gray-800"></div>
             </button>
-
           </div>
-
-        
-
         </div>
       </div> )}
-      {isCapturing && (
+      {!selectedImage && isCapturing && (
         <div className="text-center relative">
           <div className="mb-4">
             <video
@@ -135,6 +140,30 @@ const startCamera = async () => {
           </div>
         </div>
       )}
+      {selectedImage && !isCapturing && (
+  <div className="text-center mt-8 flex flex-col justify-center items-center">
+    <img
+      src={selectedImage}
+      alt="Captured"
+      className="w-full max-w-md mx-auto rounded-2xl border-4 border-gray-800 shadow-lg transform -rotate-1"
+      />
+      <div className="flex flex-row gap-2 justify-center w-fit">
+    <button
+      onClick={resetCapture}
+      className="mt-4 px-6 py-2 bg-gray-300 text-gray-800 border-2 border-gray-800 rounded-xl hover:bg-gray-400 transition-all"
+    >
+      Retake
+    </button>
+    <button
+      onClick={sendToAI}
+      className="mt-4 px-6 py-2 bg-gray-300 text-gray-800 border-2 border-gray-800 rounded-xl hover:bg-gray-400 transition-all"
+    >
+      Send to Computer
+    </button>
+    </div>
+  </div>
+
+)}
     </div>
   );
 };

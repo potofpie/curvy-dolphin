@@ -19,7 +19,15 @@ const checkForImageSchema = z.object({
   password: z.string(),
 });
 
-const requestSchemas = z.union([startPhoneLinkSchema, checkUsageSchema, checkForImageSchema]);
+const sendImageFromPhoneSchema = z.object({
+  action: z.literal('sendImageFromPhone'),
+  image: z.string(),
+  password: z.string(),
+});
+
+const privateRequestSchemas = z.union([startPhoneLinkSchema, checkUsageSchema, checkForImageSchema]);
+
+const requestSchemas = z.union([privateRequestSchemas, sendImageFromPhoneSchema]);
 
 const startPhoneLink = (
   data: z.infer<typeof startPhoneLinkSchema>,
@@ -48,6 +56,20 @@ const checkUsage = async (
   return resp.json(convertions);
 };
 
+const sendImageFromPhone = async (  
+  data: z.infer<typeof sendImageFromPhoneSchema>,
+  req: AgentRequest,
+  resp: AgentResponse,
+  ctx: AgentContext
+) => {
+  const base64Data = data.image.replace(/^data:image\/\w+;base64,/, '');
+  const imgBuffer = Buffer.from(base64Data, 'base64');
+  await ctx.objectstore.put('curvy-dolphin', `${data.password}`, imgBuffer);
+  return resp.json({
+    success: true
+  });
+};
+
 const checkForImage = async (
   data: z.infer<typeof checkForImageSchema>,
   req: AgentRequest,
@@ -55,28 +77,59 @@ const checkForImage = async (
   ctx: AgentContext,
   userId: string
 ) => {
-  const convertions = await ctx.objectstore.get('curvy-dolphin', `${userId}:${data.password}`);
-  if (!convertions) {
-    return resp.text('No convertions found');
-  }
-  
-  return resp.json(convertions);
+  const convertions = await ctx.objectstore.get('curvy-dolphin', data.password);
+  const base64 = await convertions.data.base64();
+
+  return resp.json({
+    image: `data:image/jpeg;base64,${base64}`
+  });
 };
 
-const router = (
+const checkToken = async (  
+  data: z.infer<typeof privateRequestSchemas>,
+  req: AgentRequest,
+  resp: AgentResponse,
+  ctx: AgentContext
+) => {
+  if (!data.token) {
+    throw new Error('Invalid token');
+  }
+  
+  const user = await clerkClient.verifyToken(data.token);
+  const userId = user.sub;
+
+  const userData = await clerkClient.users.getUser(userId);
+
+  if (!userData) {
+    throw new Error('Invalid token');
+  }
+
+  return userId;
+}
+
+const router = async (
   data: z.infer<typeof requestSchemas>,
   req: AgentRequest,
   resp: AgentResponse,
   ctx: AgentContext,
-  userId: string
 ) => {
   switch (data.action) {
-    case 'startPhoneLink':
+    case 'startPhoneLink': {
+      const userId = await checkToken(data, req, resp, ctx);
       return startPhoneLink(data, req, resp, ctx, userId);
-    case 'checkUsage':
+    }
+    case 'checkUsage': {
+      const userId = await checkToken(data, req, resp, ctx);
       return checkUsage(data, req, resp, ctx, userId);
-    case 'checkForImage':
+    }
+    case 'checkForImage': {
+      const userId = await checkToken(data, req, resp, ctx);
       return checkForImage(data, req, resp, ctx, userId);
+    }
+    case 'sendImageFromPhone':{
+      console.log('sendImageFromPhone');
+      return sendImageFromPhone(data, req, resp, ctx);
+    }
   }
 };
 
@@ -87,40 +140,18 @@ export default async function Agent(
 ) {
 
   const parsedRequest = requestSchemas.safeParse(await req.data.json());
+
+  console.log(parsedRequest);
+
   if (!parsedRequest.success) {
     return resp.json({
       error: 'Invalid request',
       success: false
     });
   }
-
-  if (!parsedRequest.data.token) {
-    return resp.json({
-      error: 'Invalid token',
-      success: false
-    });
-  }
-  
-  const user = await clerkClient.verifyToken(parsedRequest.data.token);
-  const userId = user.sub;
-
-  const userData = await clerkClient.users.getUser(userId);
-
-  if (!userData) {
-    return resp.json({
-      error: 'Invalid token',
-      success: false
-    });
-  }
-
-  if (!user) {
-    return resp.json({
-      error: 'Invalid token',
-      success: false
-    });
-  }
-
-  return router(parsedRequest.data, req, resp, ctx, userId);
+  const result = await router(parsedRequest.data, req, resp, ctx);
+  console.log(result);
+  return result;
 }
 
 
