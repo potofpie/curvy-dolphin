@@ -3,13 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://potofpie.github.io/curvy-dolphin",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "deploy": "sh ./scripts/random.sh && gh-pages -d dist"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.34.0",

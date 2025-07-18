@@ -5,15 +5,18 @@ import { Routes, Route } from 'react-router-dom';
 import { HashRouter as Router } from 'react-router-dom';
 
 import PhoneLinkScan from './pages/PhoneLinkScan';
+import random from './random.json';
+
+console.log(random);
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_a2V5LXRyb2xsLTQ1LmNsZXJrLmFjY291bnRzLmRldiQ';
 
 function App() {
   return (
-    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}> 
       <div className="min-h-screen bg-gray-50 text-gray-900">
 
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4">
           <header className="flex items-center justify-between mb-8">
             <div className="flex flex-row items-center pt-8 pb-4">
           <div className="flex flex-col items-center pt-8 pb-4">
@@ -25,8 +28,8 @@ function App() {
               <div className="absolute -bottom-1 left-4 w-16 h-1 bg-yellow-300 transform -rotate-1"></div>
             </h1>
             </div>
-            <SignedIn>
-              <UserButton afterSignOutUrl="/" />
+            <SignedIn >
+              <UserButton  />
             </SignedIn>
           </header>
 
@@ -73,6 +76,15 @@ function App() {
             </Router>
           </SignedIn>
         </div>
+        {
+          random.randomString && (
+            <div className="fixed bottom-0 left-0 w-full h-12 bg-gray-100 flex items-center justify-center">
+              <p className="text-gray-600 text-sm">
+                {random.randomString}
+              </p>
+            </div>
+          )
+        }
       </div>
     </ClerkProvider>
   );
