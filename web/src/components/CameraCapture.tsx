@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Camera, Upload, FileImage, AlertCircle, Smartphone } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import { useAuth } from '@clerk/clerk-react';
-import { API_URL, API_AGENT_ID } from '../contstants';
+import { API_URL, API_AGENT_ID, APP_URL } from '../contstants';
 
 
 const url = `${API_URL}/${API_AGENT_ID}`;
@@ -269,7 +269,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
         <div className="text-center relative flex flex-col items-center justify-center gap-6">
           <h3 className="text-lg text-gray-600 mb-2 relative">Scan the QR code to open the app on your phone</h3>
            
-            <QRCode value={`https://potofpie.github.io/curvy-dolphin/#/phone?password=${linkPassword}`} size={200} />
+            <QRCode value={`${APP_URL}/phone?password=${linkPassword}`} size={200} />
             <code className="text-sm text-gray-600">{linkPassword}</code>
             <button
               onClick={() => setLinkPassword(null)}

@@ -3,9 +3,8 @@ import NotesConverter from './pages/NotesConverter';
 import doodleLogo from '../doodle_agentuity.png';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PhoneLinkScan from './pages/PhoneLinkScan';
-import random from './random.json';
+// import random from './random.json';
 
-console.log(random);
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_a2V5LXRyb2xsLTQ1LmNsZXJrLmFjY291bnRzLmRldiQ';
 
@@ -30,7 +29,6 @@ function App() {
               <UserButton  />
             </SignedIn>
           </header>
-
           <SignedOut>
             <div className="flex flex-col items-center justify-center min-h-[60vh] relative">
               <div className="text-center mb-6">
@@ -65,16 +63,18 @@ function App() {
             </div>
           </SignedOut>
 
-          <SignedIn>
-            <Router>
-              <Routes>
-                <Route path="/" element={<NotesConverter />} />
-                <Route path="/phone" element={<PhoneLinkScan />} />
-              </Routes>
-            </Router>
-          </SignedIn>
+          <Router>
+            <Routes>
+              <Route path="/phone" element={<PhoneLinkScan />} />
+              <Route path="/" element={
+                <SignedIn>
+                  <NotesConverter />
+                </SignedIn>
+              } />
+            </Routes>
+          </Router>
         </div>
-        {
+        {/* {
           random.randomString && (
             <div className="fixed bottom-0 left-0 w-full h-12 bg-gray-100 flex items-center justify-center">
               <p className="text-gray-600 text-sm">
@@ -82,7 +82,7 @@ function App() {
               </p>
             </div>
           )
-        }
+        } */}
       </div>
     </ClerkProvider>
   );
