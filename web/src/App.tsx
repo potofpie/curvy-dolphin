@@ -1,9 +1,7 @@
 import { ClerkProvider, SignIn,  SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import NotesConverter from './pages/NotesConverter';
 import doodleLogo from '../doodle_agentuity.png';
-import { Routes, Route } from 'react-router-dom';
-import { HashRouter as Router } from 'react-router-dom';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PhoneLinkScan from './pages/PhoneLinkScan';
 import random from './random.json';
 
