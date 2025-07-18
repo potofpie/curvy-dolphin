@@ -52,7 +52,7 @@ deployment:
     # The memory requirements
     memory: 350Mi
     # The CPU requirements
-    cpu: 500M
+    cpu: 1000M
     # The disk size requirements
     disk: 250Mi
   # The deployment mode
