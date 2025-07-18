@@ -1,19 +1,26 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Upload, FileImage, AlertCircle, Smartphone } from 'lucide-react';
+import {
+  Camera,
+  Upload,
+  FileImage,
+  AlertCircle,
+  Smartphone,
+} from 'lucide-react';
 import QRCode from 'react-qr-code';
 import { useAuth } from '@clerk/clerk-react';
 import { API_URL, API_AGENT_ID, APP_URL } from '../contstants';
 
-
 const url = `${API_URL}/${API_AGENT_ID}`;
-
 
 interface CameraCaptureProps {
   onImageCapture: (imageData: string) => void;
   error: string | null;
 }
 
-const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) => {
+const CameraCapture: React.FC<CameraCaptureProps> = ({
+  onImageCapture,
+  error,
+}) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -21,7 +28,6 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [linkPassword, setLinkPassword] = useState<string | null>(null);
   const { getToken } = useAuth();
-
 
   const checkForImage = async (password: string) => {
     try {
@@ -31,11 +37,15 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
         body: JSON.stringify({
           action: 'checkForImage',
           token,
-          password
-        })
+          password,
+        }),
       });
       if (!response.ok) {
-        console.error('Response not ok', response.status, await response.text());
+        console.error(
+          'Response not ok',
+          response.status,
+          await response.text()
+        );
         return;
       }
       const data = await response.json();
@@ -47,7 +57,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
     } catch (err) {
       console.error('Error in checkForImage:', err);
     }
-  }
+  };
 
   const startPhoneLink = async () => {
     try {
@@ -56,8 +66,8 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
         method: 'POST',
         body: JSON.stringify({
           action: 'startPhoneLink',
-          token
-        })
+          token,
+        }),
       });
       const data = await response.json();
       setLinkPassword(data.password);
@@ -65,15 +75,15 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
       console.error('Error accessing camera:', err);
       setIsCapturing(false);
     }
-  }
+  };
 
   const startCamera = async () => {
     try {
       setIsCapturing(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' },
       });
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
@@ -88,18 +98,18 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
       const canvas = canvasRef.current;
       const video = videoRef.current;
       const context = canvas.getContext('2d');
-      
+
       if (context) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0);
-        
+
         const imageData = canvas.toDataURL('image/jpeg');
         setSelectedImage(imageData);
-        
+
         // Stop camera
         const stream = video.srcObject as MediaStream;
-        stream?.getTracks().forEach(track => track.stop());
+        stream?.getTracks().forEach((track) => track.stop());
         setIsCapturing(false);
       }
     }
@@ -127,7 +137,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
     setSelectedImage(null);
     if (isCapturing && videoRef.current) {
       const stream = videoRef.current.srcObject as MediaStream;
-      stream?.getTracks().forEach(track => track.stop());
+      stream?.getTracks().forEach((track) => track.stop());
       setIsCapturing(false);
     }
   };
@@ -137,7 +147,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
       <div className="absolute -top-3 -left-2 w-5 h-5 bg-yellow-300 rounded-full border-2 border-gray-800"></div>
       <div className="absolute -top-4 right-8 w-3 h-3 bg-pink-300 rounded-full border-2 border-gray-800"></div>
       <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-blue-300 border-2 border-gray-800 transform rotate-45"></div>
-      
+
       {error && (
         <div className="mb-6 p-4 bg-red-100 border-3 border-red-400 rounded-2xl flex items-center transform -rotate-1">
           <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
@@ -213,7 +223,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
             />
             <div className="absolute top-2 right-2 w-4 h-4 bg-red-400 rounded-full border-2 border-gray-800 animate-pulse"></div>
           </div>
-          
+
           <div className="flex gap-4 justify-center">
             <button
               onClick={captureImage}
@@ -222,7 +232,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
               Capture Photo
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full border border-gray-800"></div>
             </button>
-            
+
             <button
               onClick={resetCapture}
               className="px-6 py-3 bg-red-400 text-white border-3 border-gray-800 rounded-2xl hover:bg-red-500 transition-all transform hover:rotate-1 hover:scale-105 shadow-lg relative"
@@ -244,7 +254,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
             />
             <div className="absolute top-4 left-4 w-6 h-6 bg-green-300 rounded-full border-2 border-gray-800"></div>
           </div>
-          
+
           <div className="flex gap-4 justify-center">
             <button
               onClick={handleConvert}
@@ -253,7 +263,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
               Convert to Markdown
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full border border-gray-800"></div>
             </button>
-            
+
             <button
               onClick={resetCapture}
               className="px-6 py-3 bg-orange-400 text-white border-3 border-gray-800 rounded-2xl hover:bg-orange-500 transition-all transform hover:rotate-1 hover:scale-105 shadow-lg relative"
@@ -265,28 +275,32 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCapture, error }) 
         </div>
       )}
 
-    {linkPassword && (
+      {linkPassword && (
         <div className="text-center relative flex flex-col items-center justify-center gap-6">
-          <h3 className="text-lg text-gray-600 mb-2 relative">Scan the QR code to open the app on your phone</h3>
-           
-            <QRCode value={`${APP_URL}/phone?password=${linkPassword}`} size={200} />
-            <code className="text-sm text-gray-600">{linkPassword}</code>
-            <button
-              onClick={() => setLinkPassword(null)}
-              className="px-6 py-3 bg-red-400 text-white border-3 border-gray-800 rounded-2xl hover:bg-red-500 transition-all transform hover:rotate-1 hover:scale-105 shadow-lg relative"
-            >
-              Cancel
-              <div className="absolute -top-1 -left-1 w-3 h-3 bg-pink-300 rounded-full border border-gray-800"></div>
-            </button>
-            <button
-              onClick={() => checkForImage(linkPassword)}
-              className="px-6 py-3 bg-green-400 text-white border-3 border-gray-800 rounded-2xl hover:bg-green-500 transition-all transform hover:-rotate-1 hover:scale-105 shadow-lg relative"
-            >
-              Check for Image
-            </button>
+          <h3 className="text-lg text-gray-600 mb-2 relative">
+            Scan the QR code to open the app on your phone
+          </h3>
+
+          <QRCode
+            value={`${APP_URL}/phone?password=${linkPassword}`}
+            size={200}
+          />
+          <code className="text-sm text-gray-600">{linkPassword}</code>
+          <button
+            onClick={() => setLinkPassword(null)}
+            className="px-6 py-3 bg-red-400 text-white border-3 border-gray-800 rounded-2xl hover:bg-red-500 transition-all transform hover:rotate-1 hover:scale-105 shadow-lg relative"
+          >
+            Cancel
+            <div className="absolute -top-1 -left-1 w-3 h-3 bg-pink-300 rounded-full border border-gray-800"></div>
+          </button>
+          <button
+            onClick={() => checkForImage(linkPassword)}
+            className="px-6 py-3 bg-green-400 text-white border-3 border-gray-800 rounded-2xl hover:bg-green-500 transition-all transform hover:-rotate-1 hover:scale-105 shadow-lg relative"
+          >
+            Check for Image
+          </button>
         </div>
       )}
-
     </div>
   );
 };

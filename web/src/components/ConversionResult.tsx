@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Copy, CheckCircle, RotateCcw, FileText, ExternalLink } from 'lucide-react';
+import {
+  Copy,
+  CheckCircle,
+  RotateCcw,
+  FileText,
+  ExternalLink,
+} from 'lucide-react';
 
 interface ConversionResultProps {
   data: {
@@ -9,7 +15,10 @@ interface ConversionResultProps {
   onReset: () => void;
 }
 
-const ConversionResult: React.FC<ConversionResultProps> = ({ data, onReset }) => {
+const ConversionResult: React.FC<ConversionResultProps> = ({
+  data,
+  onReset,
+}) => {
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = async () => {
@@ -27,7 +36,7 @@ const ConversionResult: React.FC<ConversionResultProps> = ({ data, onReset }) =>
       <div className="absolute -top-3 -left-2 w-6 h-6 bg-yellow-300 rounded-full border-2 border-gray-800"></div>
       <div className="absolute -top-4 right-12 w-4 h-4 bg-pink-300 rounded-full border-2 border-gray-800"></div>
       <div className="absolute -bottom-3 -right-3 w-5 h-5 bg-blue-300 border-2 border-gray-800 transform rotate-45"></div>
-      
+
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-2xl font-bold text-gray-800 relative">
           Conversion Complete
@@ -119,9 +128,10 @@ const ConversionResult: React.FC<ConversionResultProps> = ({ data, onReset }) =>
       {/* Info Note */}
       <div className="mt-6 p-4 bg-blue-100 border-3 border-blue-400 rounded-2xl transform -rotate-1 relative">
         <p className="text-sm text-blue-800">
-          <strong>Note:</strong> This is a demo conversion using simulated OCR. 
-          For production use, integrate with services like Google Vision API, 
-          Azure Computer Vision, or Amazon Textract for accurate text extraction.
+          <strong>Note:</strong> This is a demo conversion using simulated OCR.
+          For production use, integrate with services like Google Vision API,
+          Azure Computer Vision, or Amazon Textract for accurate text
+          extraction.
         </p>
         <div className="absolute -top-2 -right-2 w-4 h-4 bg-blue-300 rounded-full border-2 border-blue-400"></div>
       </div>

@@ -8,9 +8,12 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "sh ./scripts/random.sh && gh-pages -d dist"
+    "deploy": "sh ./scripts/random.sh && gh-pages -d dist",
+    "format": "biome format --write .",
+    "format:check": "biome format ."
   },
   "dependencies": {
+    "@biomejs/biome": "^2.1.2",
     "@clerk/clerk-react": "^5.34.0",
     "@clerk/clerk-sdk-node": "^5.1.6",
     "diceware": "^0.0.1",

@@ -3,7 +3,7 @@ import CameraCapture from '../components/CameraCapture';
 import ConversionResult from '../components/ConversionResult';
 import HeroText from '../components/HeroText';
 import { useAuth } from '@clerk/clerk-react';
-import { API_URL, NOTE_READER_AGENT_ID  } from '../contstants';
+import { API_URL, NOTE_READER_AGENT_ID } from '../contstants';
 
 type Step = 'capture' | 'processing' | 'result';
 
@@ -14,7 +14,9 @@ interface ConversionData {
 
 const NotesConverter: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<Step>('capture');
-  const [conversionData, setConversionData] = useState<ConversionData | null>(null);
+  const [conversionData, setConversionData] = useState<ConversionData | null>(
+    null
+  );
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,10 +67,7 @@ const NotesConverter: React.FC = () => {
     switch (currentStep) {
       case 'capture':
         return (
-          <CameraCapture 
-            onImageCapture={handleImageCapture}
-            error={error}
-          />
+          <CameraCapture onImageCapture={handleImageCapture} error={error} />
         );
       case 'processing':
         return (
@@ -93,10 +92,7 @@ const NotesConverter: React.FC = () => {
         );
       case 'result':
         return conversionData ? (
-          <ConversionResult 
-            data={conversionData}
-            onReset={handleReset}
-          />
+          <ConversionResult data={conversionData} onReset={handleReset} />
         ) : null;
       default:
         return null;
