@@ -3,7 +3,7 @@ import CameraCapture from '../components/CameraCapture';
 import ConversionResult from '../components/ConversionResult';
 import HeroText from '../components/HeroText';
 import { useAuth } from '@clerk/clerk-react';
-import { API_URL, API_AGENT_ID, NOTE_READER_AGENT_ID  } from '../contstants';
+import { API_URL, NOTE_READER_AGENT_ID  } from '../contstants';
 
 type Step = 'capture' | 'processing' | 'result';
 
