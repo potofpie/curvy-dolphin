@@ -18,8 +18,8 @@ function App() {
   return (
     <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
       <Router>
-        <div className="min-h-screen bg-gray-50 text-gray-900">
-          <div className="container mx-auto px-4">
+        <div className="min-h-screen bg-gray-50 text-gray-900 px-4">
+          
             <Header />
             <Routes>
               <Route path="/sign-in" element={<SignInPage />} />
@@ -38,7 +38,7 @@ function App() {
                 }
               />
             </Routes>
-          </div>
+
         </div>
       </Router>
     </ClerkProvider>

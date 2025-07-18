@@ -73,8 +73,9 @@ const PhoneLinkScan = () => {
 	};
 
 	return (
-		<div>
+		<div className="flex flex-col items-center justify-center min-h-screen relative">
 			<canvas ref={canvasRef} style={{ display: "none" }} />
+
 			{!selectedImage && !isCapturing && (
 				<div className="bg-white border-4 border-gray-800 rounded-3xl p-8 shadow-lg max-w-2xl mx-auto relative transform rotate-1">
 					<div className="absolute -top-3 -left-2 w-5 h-5 bg-yellow-300 rounded-full border-2 border-gray-800"></div>
