@@ -14,6 +14,8 @@ A modern web application that converts handwritten notes to Markdown format usin
 
 ## Setup
 
+
+
 1. **Install Dependencies**
    ```bash
    npm install
