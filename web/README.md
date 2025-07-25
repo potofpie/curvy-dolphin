@@ -2,6 +2,8 @@
 
 A modern web application that converts handwritten notes to Markdown format using camera capture and OCR technology.
 
+
+
 ## Features
 
 - **User Authentication** - Secure login with Clerk
