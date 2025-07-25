@@ -4,6 +4,8 @@ A modern web application that converts handwritten notes to Markdown format usin
 
 
 
+
+
 ## Features
 
 - **User Authentication** - Secure login with Clerk
